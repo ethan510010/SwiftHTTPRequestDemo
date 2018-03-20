@@ -15,6 +15,7 @@ protocol LikeButtonDidTappedDelegate {
 class ArticleTableViewCell: UITableViewCell {
     
     
+    
     @IBOutlet weak var likeButton: UIButton!
     
     @IBOutlet weak var articleTopic: UILabel!
@@ -37,7 +38,18 @@ class ArticleTableViewCell: UITableViewCell {
         self.articleTopic.text = article.topic
         self.articleContent.text = article.content
         self.authorLabel.text = article.author
-        self.whoLike.text = "\(article.likes.count)"
+        
+        //
+        var trueCount = 0
+        for (key,value) in article.likes{
+            if value == true{
+               trueCount += 1
+            }
+        }
+        self.whoLike.text = "\(trueCount)"
+        
+//        self.whoLike.text = "\(article.likes.count)"
+        
         if article.is_liked == true{
             likeButton.backgroundColor = .blue
             likeButton.tintColor = .white

@@ -9,6 +9,8 @@
 import Foundation
 
 class APIManager{
+    
+    static let shared = APIManager()
     //GET Request
     func fetchArticle(urlString:String,parameters:[String:String],completion:@escaping([Article]?)->Void){
         let url = URL(string: urlString)
@@ -66,9 +68,11 @@ class APIManager{
                     do{
                         let jsonDecoder = JSONDecoder()
                         let postArticle = try jsonDecoder.decode(Article.self, from: data)
-                        print(postArticle)
+                        completion(postArticle)
                     }catch{
-                        dump(error)
+                        completion(nil)
+                        print(error.localizedDescription)
+                        print("post decoder error")
                     }
                 }
             }
@@ -77,39 +81,85 @@ class APIManager{
     }
     
     //DELETE文章
-    func deleteArticle(username:String,whichArticle:Int){
+    //沒有callback
+//    func deleteArticle(username:String,whichArticle:Int){
+//        let baseURL = "https://us-central1-shavenking-me-1dfe2.cloudfunctions.net/posts/\(whichArticle)/"
+//        let url = URL(string: baseURL)
+//        var request = URLRequest(url: url!)
+//        request.httpMethod = "DELETE"
+//        //Header部分
+//        request.setValue(username, forHTTPHeaderField: "username")
+//        let task = URLSession.shared.dataTask(with: request)
+//        task.resume()
+//    }
+    
+    //有callback
+    func deleteArticle(username:String,whichArticle:Int,completion:@escaping()->Void){
         let baseURL = "https://us-central1-shavenking-me-1dfe2.cloudfunctions.net/posts/\(whichArticle)/"
         let url = URL(string: baseURL)
         var request = URLRequest(url: url!)
         request.httpMethod = "DELETE"
         //Header部分
         request.setValue(username, forHTTPHeaderField: "username")
-        let task = URLSession.shared.dataTask(with: request)
+
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if error != nil{
+                print(error!.localizedDescription)
+            }else{
+                if let httpResponse = response as? HTTPURLResponse {
+                    if httpResponse.statusCode == 204{
+                       completion()
+                    }
+                }
+            }
+        }
         task.resume()
     }
     
     
     //POST 特定文章的喜歡
-    func submitLikeForSpecifiedArticle(username:String,whichArticle:Int){
+    func submitLikeForSpecifiedArticle(username:String,whichArticle:Int,completion:@escaping()->Void){
         let baseURL = "https://us-central1-shavenking-me-1dfe2.cloudfunctions.net/posts/\(whichArticle)/likes/"
         let url = URL(string: baseURL)
         var request = URLRequest(url: url!)
         request.httpMethod = "POST"
         //Header部分
         request.setValue(username, forHTTPHeaderField: "username")
-        let task = URLSession.shared.dataTask(with: request)
+//        let task = URLSession.shared.dataTask(with: request)
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if error != nil{
+                print(error!.localizedDescription)
+            }else{
+                if let httpResponse = response as? HTTPURLResponse{
+                    if httpResponse.statusCode == 200{
+                        completion()
+                    }
+                }
+            }
+        }
         task.resume()
     }
     
     //DELETE 特定文章的喜歡
-    func deleteLikeForSpecifiedArticle(username:String,whichArticle:Int) {
+    func deleteLikeForSpecifiedArticle(username:String,whichArticle:Int,completion:@escaping()->Void) {
         let baseURL = "https://us-central1-shavenking-me-1dfe2.cloudfunctions.net/posts/\(whichArticle)/likes/"
         let url = URL(string: baseURL)
         var request = URLRequest(url: url!)
         request.httpMethod = "DELETE"
         //Header部分
         request.setValue(username, forHTTPHeaderField: "username")
-        let task = URLSession.shared.dataTask(with: request)
+//        let task = URLSession.shared.dataTask(with: request)
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if error != nil{
+                print(error!.localizedDescription)
+            }else{
+                if let httpResponse = response as? HTTPURLResponse{
+                    if httpResponse.statusCode == 204{
+                        completion()
+                    }
+                }
+            }
+        }
         task.resume()
     }
 }
