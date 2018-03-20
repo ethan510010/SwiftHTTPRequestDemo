@@ -13,10 +13,6 @@ class EditArticleViewController: UIViewController {
     
     let baseUrl = "https://us-central1-shavenking-me-1dfe2.cloudfunctions.net/posts/"
     
-//    let apiManager = APIManager()
-    
-    
-    //接收存下來的資料
     let username = UserDefaults.standard.string(forKey: "username")
     
     @IBOutlet weak var topicTextField: UITextField!

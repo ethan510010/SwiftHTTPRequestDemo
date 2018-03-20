@@ -38,8 +38,7 @@ class ArticleTableViewCell: UITableViewCell {
         self.articleTopic.text = article.topic
         self.articleContent.text = article.content
         self.authorLabel.text = article.author
-        
-        //
+
         var trueCount = 0
         for (key,value) in article.likes{
             if value == true{
@@ -47,8 +46,6 @@ class ArticleTableViewCell: UITableViewCell {
             }
         }
         self.whoLike.text = "\(trueCount)"
-        
-//        self.whoLike.text = "\(article.likes.count)"
         
         if article.is_liked == true{
             likeButton.backgroundColor = .blue
